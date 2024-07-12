@@ -4,10 +4,22 @@ import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api/ipapi': {
+        target: 'https://ipapi.com/json',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ipapi/, ''),
+        configure: (proxy, options) => {
+          // Configure the proxy settings if necessary
+        },
+      },
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
+  }
 })
