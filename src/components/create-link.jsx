@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { QRCode } from "react-qrcode-logo";
 import { PlusIcon } from "lucide-react";
 import { getUrls } from '../../db/apiUrls';
+import {siteName} from '../../contants';
 
 import {
     DropdownMenu,
@@ -44,14 +45,12 @@ export default function CreateLink() {
     let [searchParams, setSearchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
 
-    
-
     const [errors, setErrors] = useState({});
     const [formValues, setFormValues] = useState({
         title: "",
         longUrl: longLink ? longLink : "",
         customUrl: "",
-        category: "",
+        category: "MISC", // Default category
     });
 
     const schema = yup.object().shape({
@@ -80,23 +79,22 @@ export default function CreateLink() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [error, data]);
 
-    // useEffect(()=>{
-    //     fnUrls();
-    //     if(urls?.length){
-    //         setPresentCategory(urls?.map((url,index)=>{
-    //             return url.category;
-    //         }))
-    //       }
-    // },[urls?.length])
-
     const createNewLink = async () => {
         setErrors([]);
         try {
+            // Set default category to "MISC" if none is selected
+            if (!formValues.category) {
+                setFormValues({ ...formValues, category: "MISC" });
+            }
+
+            if (!categoryList.includes(formValues.category)) {
+                setCategoryList([...categoryList, formValues.category]);
+            }
+
             await schema.validate(formValues, { abortEarly: false });
 
             const canvas = ref.current.canvasRef.current;
             const blob = await new Promise((resolve) => canvas.toBlob(resolve));
-
             await fnCreateUrl(blob);
         } catch (e) {
             const newErrors = {};
@@ -109,7 +107,7 @@ export default function CreateLink() {
         }
     };
 
-    const [categoryList, setCategoryList] = useState(['Category', 'Study', 'Jobs', 'University', 'IG Hacks']);
+    const [categoryList, setCategoryList] = useState(['Category', 'Study', 'Jobs', 'University', 'IG Hacks', 'MISC']);
     const [category, setCategory] = useState(categoryList[0]);
     const [isAdding, setIsAdding] = useState(false);
     const [newCategory, setNewCategory] = useState('');
@@ -166,7 +164,7 @@ export default function CreateLink() {
                 />
                 {errors.longUrl && <Error message={errors.longUrl} />}
                 <div className="flex items-center gap-2">
-                    <Card className="p-2">bytebite.in</Card> /
+                    <Card className="p-2">{siteName}</Card> /
                     <Input
                         id="customUrl"
                         placeholder="Custom Link (optional)"
@@ -175,9 +173,9 @@ export default function CreateLink() {
                     />
                 </div>
                 <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline">{category}</Button>
-                </DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">{category}</Button>
+                    </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         {categoryList.map((category, index) => (
                             <DropdownMenuItem id="category" key={index} onClick={() => onSelectCategoryClick(category)}>
@@ -206,7 +204,6 @@ export default function CreateLink() {
                                 />
                             )}
                         </div>
-
                     </DropdownMenuContent>
                 </DropdownMenu>
                 {error && <Error message={error.message} />}

@@ -10,6 +10,7 @@ import { Copy, Download, LinkIcon, Trash, Share2 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BarLoader, BeatLoader } from "react-spinners";
+import { getSiteURL } from "../../contants";
 
 const Link = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Link = () => {
   }
 
   const shareLink = async() =>{
-    const message = `whatsapp://send?text=Transformed by Bytebite! Elevate your links today. ${`https://bytebite.in/${link}`}`
+    const message = `whatsapp://send?text=Transformed by Bytebite! Elevate your links today. ${getSiteURL(link)}`
     console.log("Message",message);
     const anchor = document.createElement("a")
     anchor.href = message;
@@ -90,11 +91,11 @@ const Link = () => {
             {url?.title}
           </span>
           <a
-            href={`https://bytebite.in/${link}`}
+            href={getSiteURL(link)}
             target="_blank"
             className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer"
           >
-            https://bytebite.in/{link}
+            {getSiteURL(link)}
           </a>
           <a
             href={url?.original_url}
@@ -111,7 +112,7 @@ const Link = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`https://bytebite.in/${link}`)
+                navigator.clipboard.writeText(getSiteURL(link))
               }
             >
               <Copy />

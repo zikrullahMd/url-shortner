@@ -6,6 +6,7 @@ import { Button } from './ui/button'
 import useFetch from '@/hooks/useFetch'
 import { deleteUrl } from '../../db/apiUrls'
 import { BeatLoader } from 'react-spinners'
+import { getSiteURL } from '../../contants';
 
 function LinkCard({url,fetchUrls}) {
 
@@ -16,7 +17,7 @@ function LinkCard({url,fetchUrls}) {
         const anchor = document.createElement("a")
         anchor.href = imageUrl;
         anchor.download = fileName;
-
+        anchor.target = '_blank';
         document.body.appendChild(anchor);
         anchor.click();
         document.body.removeChild(anchor);
@@ -30,7 +31,7 @@ function LinkCard({url,fetchUrls}) {
         <Link to={`/link/${url?.id}`} className='flex flex-col flex-1'>
             <span className='text-3xl font-extrabold hover:underline cursor-pointer'>{url?.title}</span>
             <span className='text-2xl text-blue-400 font-bold hover:underline cursor-pointer'>
-                https://bytebite.in/{url?.custom_url ? url?.custom_url : url?.short_url}
+                {getSiteURL(url?.custom_url ? url?.custom_url : url?.short_url)}
             </span>
             <span className='flex items-center gap-1 hover:underline cursor-pointer'>
                 {url?.original_url}
@@ -43,7 +44,7 @@ function LinkCard({url,fetchUrls}) {
             <div className='flex gap-6 flex-1'>
                 <Button variant="ghost">
                     <Copy onClick={()=>{
-                        navigator.clipboard.writeText(`https://bytebite.in/${url?.custom_url}`);
+                        navigator.clipboard.writeText(getSiteURL(url?.custom_url));
                     }}/>
                 </Button>
                 <Button variant="ghost">

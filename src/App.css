@@ -1,3 +1,6 @@
+body{
+    font-family: 'Lato', sans-serif; 
+}
 .add-category{
     display: flex;
     justify-content: center;
@@ -10,10 +13,15 @@
     justify-content: center;
     align-items: center;
     border-radius: 25px;
-    border: 3px solid #7F1D1D;
+    border: 3px solid #262e42;
     color: white;
-
+    box-shadow: 0 0 8px rgba(30, 144, 255, 0.3),  /* Dodger Blue */
+                0 0 12px rgba(0, 206, 209, 0.2),  /* Dark Turquoise */
+                0 0 16px rgba(218, 112, 214, 0.1),/* Orchid */
+                0 0 20px rgba(173, 216, 230, 0.1);/* Light Blue */
 }
+
+
 
 
 
