@@ -8,6 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Filter } from 'lucide-react'
@@ -22,7 +30,10 @@ import CreateLink from '../components/create-link';
 
 function Dashboard() {
 
-  const [searchQuery,setSearchQuery] = useState();
+  const [searchQuery,setSearchQuery] = useState('');
+
+  let [presentCategory, setPresentCategory] = useState([])
+  const [filteredCategory, setFilterCategory] = useState('All')
 
   const {user} = UrlState();
 
@@ -36,18 +47,21 @@ function Dashboard() {
 
   useEffect(()=>{
     fnUrls();
-  },[])
+    fnClicks();
+    let categories = new Set();
+    urls?.forEach((url)=>{
+      categories.add(url.category);
+    })
+    setPresentCategory(Array.from(categories))
+    setPresentCategory(prevCategories => [...prevCategories, 'All']);
+  },[urls?.length])
 
-  useEffect(()=>{
-    if(urls?.length){
-      fnClicks();
-      console.log("URL ",filteredUrls);
-    }
-  },[urls?.length]);
 
   const filteredUrls = urls?.filter((url) => 
+    (filteredCategory === '' || filteredCategory === 'All' || url?.category === filteredCategory) &&
     url?.title?.toLowerCase().includes(searchQuery?.toLowerCase())
   );
+
 
   return (
     <div className='flex flex-col gap-8'>
@@ -76,14 +90,23 @@ function Dashboard() {
       <CreateLink />
     </div>
 
-    <div className='relative'>
+    <div className='flex relative'>
       <Input value={searchQuery} type="text" placeholder="Filter Links" onChange={(event)=>{
         setSearchQuery(event.target.value)
       }}/>
-      <Filter className="absolute top-2 right-2 p-1" />
+      <DropdownMenu>
+        <DropdownMenuTrigger><Filter className="absolute top-2 right-2 p-1" /></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Filter by category</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {presentCategory?.map((category,index)=>{
+            return (<DropdownMenuItem onClick={()=>setFilterCategory(category)} key={index}>{category}</DropdownMenuItem>)
+          })}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
       {error && <Error message={error?.message} />}
-      {(filteredUrls || []).map((url,id)=>{
+      {(filteredUrls)?.map((url,id)=>{
         return <LinkCard key={id} url={url} fetchUrls={fnUrls}/>
       })}
     </div>

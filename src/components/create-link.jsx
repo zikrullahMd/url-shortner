@@ -1,10 +1,22 @@
-
 import { useRef, useState, useEffect } from "react";
 import { UrlState } from "@/context";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card } from "./ui/card";
 import * as yup from 'yup';
 import { QRCode } from "react-qrcode-logo";
+import { PlusIcon } from "lucide-react";
+import { getUrls } from '../../db/apiUrls';
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { motion } from 'framer-motion';
+import '../App.css';
 
 import {
     Dialog,
@@ -32,11 +44,14 @@ export default function CreateLink() {
     let [searchParams, setSearchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
 
+    
+
     const [errors, setErrors] = useState({});
     const [formValues, setFormValues] = useState({
         title: "",
         longUrl: longLink ? longLink : "",
         customUrl: "",
+        category: "",
     });
 
     const schema = yup.object().shape({
@@ -46,6 +61,7 @@ export default function CreateLink() {
             .url("Must be a valid URL")
             .required("Long URL is required"),
         customUrl: yup.string(),
+        category: yup.string(),
     });
 
     const handleChange = (e) => {
@@ -64,6 +80,15 @@ export default function CreateLink() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [error, data]);
 
+    // useEffect(()=>{
+    //     fnUrls();
+    //     if(urls?.length){
+    //         setPresentCategory(urls?.map((url,index)=>{
+    //             return url.category;
+    //         }))
+    //       }
+    // },[urls?.length])
+
     const createNewLink = async () => {
         setErrors([]);
         try {
@@ -81,6 +106,30 @@ export default function CreateLink() {
             });
 
             setErrors(newErrors);
+        }
+    };
+
+    const [categoryList, setCategoryList] = useState(['Category', 'Study', 'Jobs', 'University', 'IG Hacks']);
+    const [category, setCategory] = useState(categoryList[0]);
+    const [isAdding, setIsAdding] = useState(false);
+    const [newCategory, setNewCategory] = useState('');
+
+    const onSelectCategoryClick = (selectedCategory) => {
+        setCategory(selectedCategory);
+        setFormValues({ ...formValues, category: selectedCategory });
+    };
+
+    const onAddCategoryList = () => {
+        setCategoryList([...categoryList, newCategory]);
+        setCategory(newCategory);
+        setFormValues({ ...formValues, category: newCategory });
+        setNewCategory('');
+        setIsAdding(false);
+    };
+
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter') {
+            onAddCategoryList();
         }
     };
 
@@ -117,7 +166,7 @@ export default function CreateLink() {
                 />
                 {errors.longUrl && <Error message={errors.longUrl} />}
                 <div className="flex items-center gap-2">
-                    <Card className="p-2">trimrr.in</Card> /
+                    <Card className="p-2">bytebite.in</Card> /
                     <Input
                         id="customUrl"
                         placeholder="Custom Link (optional)"
@@ -125,6 +174,41 @@ export default function CreateLink() {
                         onChange={handleChange}
                     />
                 </div>
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">{category}</Button>
+                </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        {categoryList.map((category, index) => (
+                            <DropdownMenuItem id="category" key={index} onClick={() => onSelectCategoryClick(category)}>
+                                {category}
+                            </DropdownMenuItem>
+                        ))}
+                        <div className="flex justify-center box">
+                            {!isAdding ? (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setIsAdding(true)}
+                                    className='transition-opacity duration-300 ease-in-out'
+                                >
+                                    <PlusIcon className="h-4" />
+                                </Button>
+                            ) : (
+                                <Input
+                                    id="newCategory"
+                                    value={newCategory}
+                                    placeholder="Enter new category"
+                                    onChange={(e) => setNewCategory(e.target.value)}
+                                    onKeyDown={handleEnterPress}
+                                    onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the input
+                                />
+                            )}
+                        </div>
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 {error && <Error message={error.message} />}
                 <DialogFooter className="sm:justify-start">
                     <Button

@@ -44,7 +44,6 @@ function Signin() {
       const {data,error,loading,fn:fnLogin} = useFetch(signin,formData);
       const {fetchUser} = UrlState();
         if(error === null && data){
-          console.log("Success ",data);
           navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
           fetchUser();
         }
