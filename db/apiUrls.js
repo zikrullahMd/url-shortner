@@ -24,7 +24,7 @@ export async function deleteUrl(id){
     return data;
 }
 
-export async function createUrl({title,longUrl,customUrl,user_id},qrcode){    
+export async function createUrl({title,longUrl,customUrl,user_id,category},qrcode){    
     const short_url = Math.random().toString(36).substring(2,6);
     const fileName = `qr-${short_url}`;
     const {error:storageError} = await supabase.storage.from("qrs").upload(fileName,qrcode);
@@ -40,12 +40,12 @@ export async function createUrl({title,longUrl,customUrl,user_id},qrcode){
             user_id,
             short_url,
             qr,
+            category,
         }
     ])
     .select();
 
     if(error){
-        console.log("URL enter error",error);
         throw new Error("Error creating short url");
     }
 
@@ -55,7 +55,6 @@ export async function createUrl({title,longUrl,customUrl,user_id},qrcode){
 
 export async function getLongUrl(id){
     const {data, error} = await supabase.from("urls").select("id, original_url").or(`short_url.eq.${id},custom_url.eq.${id}`).single();
-
     if(error){
         console.error(error.message);
         throw new Error("Unable to load URL's");
@@ -101,7 +100,6 @@ export const storeClicks = async ({id, originalUrl}) => {
     const device = res.type || "desktop";
     const response = await fetch(`https://api.ipdata.co/?api-key=${apiKey}`);
     const { city, country_name: country } = await response.json();
-    console.log("API",country);
     
 
     await supabase.from("clicks").insert({

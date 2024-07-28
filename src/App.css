@@ -1,0 +1,20 @@
+.add-category{
+    display: flex;
+    justify-content: center;
+    
+}
+.category-tag {
+    color: black;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+    border: 3px solid #7F1D1D;
+    color: white;
+
+}
+
+
+
+

@@ -47,7 +47,7 @@ function LandingPage() {
         className="w-full my-11 md:px-11"
         style={{ height: "500px" }}
       />
-      <Accordion type="multiple" collapsible className="w-full md:px-11">
+      <Accordion type="multiple" collabsable className="w-full md:px-11">
         <AccordionItem value="item-1">
           <AccordionTrigger>Is this free?</AccordionTrigger>
           <AccordionContent>

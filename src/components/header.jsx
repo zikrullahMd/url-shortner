@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo_link.png";
+import logo from "../assets/logo_link2.png";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,DropdownMenuLabel,DropdownMenuSeparator, DropdownMenuItem } from "./ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
@@ -19,7 +19,7 @@ function Header() {
     <>
     <nav className="py-4 flex justify-between items-center">
       <Link to="/">
-        <img src={logo} className="h-16" alt="logo" />
+        <img src={logo} className="h-20" alt="logo"/>
       </Link>
       <div>
         {!user ? (

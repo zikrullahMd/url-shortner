@@ -1,3 +1,4 @@
+import '../App.css';
 import { Copy, Download, Trash } from 'lucide-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -29,7 +30,7 @@ function LinkCard({url,fetchUrls}) {
         <Link to={`/link/${url?.id}`} className='flex flex-col flex-1'>
             <span className='text-3xl font-extrabold hover:underline cursor-pointer'>{url?.title}</span>
             <span className='text-2xl text-blue-400 font-bold hover:underline cursor-pointer'>
-                https://trimrr.in/{url?.custom_url ? url?.custome_url : url.short_url}
+                https://bytebite.in/{url?.custom_url ? url?.custom_url : url?.short_url}
             </span>
             <span className='flex items-center gap-1 hover:underline cursor-pointer'>
                 {url?.original_url}
@@ -38,18 +39,23 @@ function LinkCard({url,fetchUrls}) {
                 {new Date(url?.created_at).toLocaleString()}
             </span>
         </Link>
-        <div className='flex gap-6'>
-            <Button variant="ghost">
-                <Copy onClick={()=>{
-                    navigator.clipboard.writeText(`https://trimrr.in/${url?.custom_url}`);
-                }}/>
-            </Button>
-            <Button variant="ghost">
-                <Download onClick={downloadImage}/>
-            </Button>
-            <Button variant="ghost" onClick={()=>fnDelete().then(()=>fetchUrls())}>
-                {loadingDelete?<BeatLoader size={5} color='white'/> : <Trash />}
-            </Button>
+        <div className='flex flex-col items-center'>
+            <div className='flex gap-6 flex-1'>
+                <Button variant="ghost">
+                    <Copy onClick={()=>{
+                        navigator.clipboard.writeText(`https://bytebite.in/${url?.custom_url}`);
+                    }}/>
+                </Button>
+                <Button variant="ghost">
+                    <Download onClick={downloadImage}/>
+                </Button>
+                <Button variant="ghost" onClick={()=>fnDelete().then(()=>fetchUrls())}>
+                    {loadingDelete?<BeatLoader size={5} color='white'/> : <Trash />}
+                </Button>
+            </div>
+            <div className='category-tag flex-[0.5]'>
+                <span>{url?.category}</span>
+            </div>
         </div>
     </div>
   )

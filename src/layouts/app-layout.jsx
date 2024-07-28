@@ -6,15 +6,11 @@ const AppLayout = () => {
   return (
     <div>
         <main className='min-h-screen container'>
-            {/* {Header} */}
             <Header/>
             <Outlet/>
-            {/* {body} */}
         </main>
-
-        {/* {footer} */}
         <div className='p-10 text-center bg-gray-800 mt-10'>
-          Made with ❤️ by Zikrullah
+        Made with ❤️ by <a href='https://www.linkedin.com/in/mohammed-zikrullah/' target='_blank' style={{color:'#60A5FA',textDecoration:'underline'}}>Zikrullah</a>
         </div>
     </div>
   )
